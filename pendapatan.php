@@ -1,47 +1,44 @@
 <?php
 include('koneksi.php');
-$case = mysqli_query($conn, "SELECT * FROM tb_covid");
-while ($row = mysqli_fetch_array($case)) {
-    $country[] = $row['country'];
-    $jumlah_kasus[] = $row['total_cases'];
-    $kasus_baru[] = $row['new_cases'];
-    $jumlah_kematian[] = $row['total_deaths'];
-    $kematian_baru[] = $row['new_deaths'];
-    $total_kesembuhan[] = $row['total_recovered'];
-    $sembuh_baru[] = $row['new_recovered'];
-}
+$pendapatanNorthwest = mysqli_query($conn, "SELECT SUM(LineTotal) FROM fact_sales WHERE `TerritoryID` = 1");
+$pendapatanNortheast = mysqli_query($conn, "SELECT SUM(LineTotal) FROM fact_sales WHERE `TerritoryID` = 2");
+$pendapatanCentral = mysqli_query($conn, "SELECT SUM(LineTotal) FROM fact_sales WHERE `TerritoryID` = 3");
+$pendapatanSouthwest = mysqli_query($conn, "SELECT SUM(LineTotal) FROM fact_sales WHERE `TerritoryID` = 4");
+$pendapatanSoutheast = mysqli_query($conn, "SELECT SUM(LineTotal) FROM fact_sales WHERE `TerritoryID` = 5");
+$pendapatanCanada = mysqli_query($conn, "SELECT SUM(LineTotal) FROM fact_sales WHERE `TerritoryID` = 6");
+$territory = mysqli_query($conn, "SELECT Name FROM salesterritory WHERE `TerritoryID` < 6");
 
 ?>
 <DOCTYPE HTML>
     <html>
 
     <head>
-        <title> Bar Chart Tabel Covid</title>
-        <script type="text/javascript" src="Chart2.js"></script>
+        <title> Pendapatan Benua Amerika</title>
+        <script type="text/javascript" src="Chart.js"></script>
     </head>
 
     <body>
         <div style="width : 800px; height:800px">
             <canvas id="myChart"></canvas>
         </div>
-
+        <h1>halo</h1>
 
         <script>
-            var ctx = document.getElementById("myChart").getContext('2d');
+            var ctx = document.getElementById("myChart");
             var myChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
-                    labels: <?php echo json_encode($country); ?>,
+                    labels: <?php echo json_encode($territory); ?>,
                     datasets: [{
                             label: 'Total Kasus',
-                            data: <?php echo json_encode($jumlah_kasus); ?>,
+                            data: <?php echo json_encode($pendapatanNorthwest); ?>,
                             backgroundColor: 'rgba(255, 99, 132, 0.2)',
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Kasus Baru',
-                            data: <?php echo json_encode($kasus_baru); ?>,
+                            data: <?php echo json_encode($pendapatanNortheast); ?>,
                             backgroundColor: 'rgb(46, 139, 87, 0.2)',
                             borderColor: 'rgb(46, 139, 87, 1)',
                             borderWidth: 1
@@ -49,7 +46,7 @@ while ($row = mysqli_fetch_array($case)) {
 
                         {
                             label: 'Jumlah Kematian',
-                            data: <?php echo json_encode($jumlah_kematian); ?>,
+                            data: <?php echo json_encode($pendapatanCentral); ?>,
                             backgroundColor: 'rgb(66, 245, 72, 0.2)',
                             borderColor: 'rgb(66, 245, 72, 1)',
                             borderWidth: 1
@@ -57,21 +54,21 @@ while ($row = mysqli_fetch_array($case)) {
 
                         {
                             label: 'Kematian Baru',
-                            data: <?php echo json_encode($kematian_baru); ?>,
+                            data: <?php echo json_encode($pendapatanSouthwest); ?>,
                             backgroundColor: 'rgb(245, 227, 66, 0.2)',
                             borderColor: 'rgb(245, 227, 66, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Total Kesembuhan',
-                            data: <?php echo json_encode($total_kesembuhan); ?>,
+                            data: <?php echo json_encode($pendapatanSoutheast); ?>,
                             backgroundColor: 'rgb(233, 66, 245, 0.2)',
                             borderColor: 'rgb(233, 66, 245, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Sembuh Baru',
-                            data: <?php echo json_encode($sembuh_baru); ?>,
+                            data: <?php echo json_encode($pendapatanCanada); ?>,
                             backgroundColor: 'rgb(66, 75, 245 0.2)',
                             borderColor: 'rgb(66, 75, 245, 1)',
                             borderWidth: 1
